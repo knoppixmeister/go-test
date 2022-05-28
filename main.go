@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 	"encoding/json"
+	"os"
 
 	"github.com/gorilla/mux"
 )
@@ -70,14 +71,19 @@ func main() {
 
 	// http.Handle("/", router)
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
+
 	srv := &http.Server{
 		Handler:      router,
-		Addr:         "127.0.0.1:5005",
+		Addr:         ":"+port,
 
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
-		IdleTimeout:  time.Second * 60,
+		IdleTimeout:  60 * time.Second,
 	}
 
 	log.Fatal(srv.ListenAndServe())
